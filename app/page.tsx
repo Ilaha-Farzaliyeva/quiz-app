@@ -19,14 +19,14 @@ export default function Home() {
             onClick={() => handleSelectCategory("javascript")}
             className="w-full py-4 bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
           >
-            ⚡ JavaScript Bilikləri
+             JavaScript Bilikləri
           </button>
           
           <button
             onClick={() => handleSelectCategory("math")}
             className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
           >
-            📐 Riyaziyyat Məntiqi
+             Riyaziyyat Məntiqi
           </button>
         </div>
       </div>
