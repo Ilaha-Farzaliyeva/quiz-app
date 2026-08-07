@@ -1,10 +1,11 @@
 "use client";
+
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { quizData } from "@/data/questions";
 import Link from "next/link";
 
-export default function QuizPage() {
+function QuizContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
 
@@ -14,7 +15,8 @@ export default function QuizPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
- if (questions.length === 0) {
+
+  if (questions.length === 0) {
     return (
       <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
         <div className="text-center">
@@ -110,5 +112,13 @@ export default function QuizPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">Yüklənir...</div>}>
+      <QuizContent />
+    </Suspense>
   );
 }
