@@ -229,9 +229,9 @@ export const quizData = {
     },
     {
       id: 7,
-      question: "Aşağıdakılardan hansı məntiqi əməliyyat deyil?",
-      options: ["AND", "OR", "XOR", "SUM"],
-      correct: 3,
+      question: "Dörd qardaşın hərəsinin bir bacısı var. Cəmi neçə nəfərdirlər?",
+      options: ["4", "5", "6", "7"],
+      correct: 1,
     },
     {
       id: 8,

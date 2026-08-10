@@ -1,17 +1,10 @@
 "use client";
-
 import { useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import { quizData } from "@/data/questions";
 import Link from "next/link";
 
-function QuizContent() {
-  const searchParams = useSearchParams();
-  const category = searchParams.get("category");
-  const [feedbackMessage, setFeedbackMessage] = useState(""); 
-  const questions = quizData[category as keyof typeof quizData] || [];
-
-  const successMessages = [
+const successMessages = [
   "Əlasan!",
   "Möhtəşəm!",
   "Çox gözəl!",
@@ -28,37 +21,29 @@ const errorMessages = [
 ];
 
 const getRandomMessage = (messages: string[]): string => {
-    const randomIndex: number = Math.floor(Math.random() * messages.length);
-    return messages[randomIndex];
-  };
+  const randomIndex: number = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+};
 
+function QuizContent() {
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  // URL-dən gələn kateqoriyaya uyğun suallar götürülür
+  const questions = quizData[category as keyof typeof quizData] || [];
+  // Oyunun vəziyyətini idarə edən state-lər
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(() =>
     Array(questions.length).fill(null)
   );
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-
-  if (questions.length === 0) {
-    return (
-      <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
-
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Kateqoriya tapılmadı!</h1>
-          <Link href="/" className="px-6 py-2 bg-indigo-600 rounded-xl text-white">
-            Ana səhifəyə qayıt
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
   const currentQuestion = questions[currentIndex];
   const selectedOption = answers[currentIndex];
-
+  // Variant seçildikdə işə düşən funksiya
   const handleOptionClick = (index: number) => {
-    if (selectedOption !== null) return; 
-
+    if (selectedOption !== null) return;
+    // Seçilmiş variantın indeksini state-ə əlavə edir və doğru cavab olub olmadığını yoxlayır
     setAnswers((currentAnswers) => {
       const updatedAnswers = [...currentAnswers];
       updatedAnswers[currentIndex] = index;
@@ -71,7 +56,7 @@ const getRandomMessage = (messages: string[]): string => {
       setFeedbackMessage(getRandomMessage(errorMessages));
     }
   };
-
+  // Növbəti sual və əvvəlki sual düymələrinə basıldıqda işə düşən funksiyalar
   const handleNext = () => {
     setFeedbackMessage("");
     if (currentIndex + 1 < questions.length) {
@@ -80,14 +65,26 @@ const getRandomMessage = (messages: string[]): string => {
       setIsFinished(true);
     }
   };
-
   const handlePrevious = () => {
     setFeedbackMessage("");
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
   };
-
+  // Əgər suallar tapılmayıbsa, istifadəçiyə xəbərdarlıq göstərir
+  if (questions.length === 0) {
+    return (
+      <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Kateqoriya tapılmadı!</h1>
+          <Link href="/" className="px-6 py-2 bg-indigo-600 rounded-xl text-white">
+            Ana səhifəyə qayıt
+          </Link>
+        </div>
+      </main>
+    );
+  }
+  // Oyun bitdikdə istifadəçiyə nəticəsini göstərir və yeni kateqoriya seçmək üçün link verir
   if (isFinished) {
     return (
       <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
@@ -106,34 +103,30 @@ const getRandomMessage = (messages: string[]): string => {
       </main>
     );
   }
-
+  // Əsas oyun interfeysi
   return (
     <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
       {feedbackMessage && (
-          <div className= ' text-white-400 font-serif text-5xl mb-6'>
-            {feedbackMessage}
-          </div>
-        )}
+        <div className=' text-white-400 font-serif text-5xl mb-6'>
+          {feedbackMessage}
+        </div>
+      )}
       <div className="max-w-lg w-full bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-700">
         <div className="flex justify-between items-center mb-6 text-slate-400 text-sm">
           <span>Sual {currentIndex + 1} / {questions.length}</span>
           <span>Xal: {score}</span>
         </div>
-
         <h2 className="text-xl font-semibold mb-6">{currentQuestion.question}</h2>
-
         <div className="space-y-3 mb-6">
           {currentQuestion.options.map((option, index) => {
             let btnBg = "bg-slate-700 hover:bg-slate-600 text-white";
-
             if (selectedOption !== null) {
               if (index === currentQuestion.correct) {
-                btnBg = "bg-green-600 text-white"; 
+                btnBg = "bg-green-600 text-white";
               } else if (index === selectedOption) {
-                btnBg = "bg-red-600 text-white"; 
+                btnBg = "bg-red-600 text-white";
               }
             }
-
             return (
               <button
                 key={index}
@@ -145,19 +138,17 @@ const getRandomMessage = (messages: string[]): string => {
             );
           })}
         </div>
-
         <div className="flex gap-3">
           {currentIndex > 0 && (
-          <button
-            onClick={handlePrevious}
-            aria-label="Əvvəlki sual"
-            title="Əvvəlki sual"
-            className="w-12 shrink-0 py-3 bg-slate-700 hover:bg-slate-600 font-semibold rounded-xl transition cursor-pointer"
-          >
-            &larr;
-          </button>
-        )}
-
+            <button
+              onClick={handlePrevious}
+              aria-label="Əvvəlki sual"
+              title="Əvvəlki sual"
+              className="w-12 shrink-0 py-3 bg-slate-700 hover:bg-slate-600 font-semibold rounded-xl transition cursor-pointer"
+            >
+              &larr;
+            </button>
+          )}
           <button
             onClick={handleNext}
             className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-xl transition cursor-pointer"
