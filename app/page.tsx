@@ -16,17 +16,31 @@ export default function Home() {
 
         <div className="space-y-4">
           <button
-            onClick={() => handleSelectCategory("javascript")}
+            onClick={() => handleSelectCategory("math")}
             className="w-full py-4 bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
           >
-             JavaScript Bilikləri
+             Riyaziyyat
           </button>
           
           <button
-            onClick={() => handleSelectCategory("math")}
+            onClick={() => handleSelectCategory("logic")}
             className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
           >
-             Riyaziyyat Məntiqi
+             Məntiq
+          </button>
+
+          <button
+            onClick={() => handleSelectCategory("javascript")}
+            className="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
+          >
+              JavaScript
+          </button>
+
+          <button
+            onClick={() => handleSelectCategory("python")}
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition duration-200 shadow-lg cursor-pointer"
+          >
+             Python
           </button>
         </div>
       </div>

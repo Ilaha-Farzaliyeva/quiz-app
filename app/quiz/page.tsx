@@ -8,17 +8,41 @@ import Link from "next/link";
 function QuizContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
-
+  const [feedbackMessage, setFeedbackMessage] = useState(""); 
   const questions = quizData[category as keyof typeof quizData] || [];
 
+  const successMessages = [
+  "Əlasan!",
+  "Möhtəşəm!",
+  "Çox gözəl!",
+  "Supersən!",
+  "Afərin!"
+];
+
+const errorMessages = [
+  "Növbəti sualda bacararsan!",
+  "Sən bunu bacararsan, davam et!",
+  "Diqqətli ol, düz cavabı tapacaqsan!",
+  "Narahat olma, davam et!",
+  "Özünə inan!"
+];
+
+const getRandomMessage = (messages: string[]): string => {
+    const randomIndex: number = Math.floor(Math.random() * messages.length);
+    return messages[randomIndex];
+  };
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [answers, setAnswers] = useState<(number | null)[]>(() =>
+    Array(questions.length).fill(null)
+  );
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
   if (questions.length === 0) {
     return (
       <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
+
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Kateqoriya tapılmadı!</h1>
           <Link href="/" className="px-6 py-2 bg-indigo-600 rounded-xl text-white">
@@ -30,22 +54,37 @@ function QuizContent() {
   }
 
   const currentQuestion = questions[currentIndex];
+  const selectedOption = answers[currentIndex];
 
   const handleOptionClick = (index: number) => {
     if (selectedOption !== null) return; 
 
-    setSelectedOption(index);
+    setAnswers((currentAnswers) => {
+      const updatedAnswers = [...currentAnswers];
+      updatedAnswers[currentIndex] = index;
+      return updatedAnswers;
+    });
     if (index === currentQuestion.correct) {
-      setScore(score + 1);
+      setScore((currentScore) => currentScore + 1);
+      setFeedbackMessage(getRandomMessage(successMessages));
+    } else {
+      setFeedbackMessage(getRandomMessage(errorMessages));
     }
   };
 
   const handleNext = () => {
-    setSelectedOption(null);
+    setFeedbackMessage("");
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsFinished(true);
+    }
+  };
+
+  const handlePrevious = () => {
+    setFeedbackMessage("");
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
@@ -70,6 +109,11 @@ function QuizContent() {
 
   return (
     <main className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
+      {feedbackMessage && (
+          <div className= ' text-white-400 font-serif text-5xl mb-6'>
+            {feedbackMessage}
+          </div>
+        )}
       <div className="max-w-lg w-full bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-700">
         <div className="flex justify-between items-center mb-6 text-slate-400 text-sm">
           <span>Sual {currentIndex + 1} / {questions.length}</span>
@@ -102,14 +146,25 @@ function QuizContent() {
           })}
         </div>
 
-        {selectedOption !== null && (
+        <div className="flex gap-3">
+          {currentIndex > 0 && (
+          <button
+            onClick={handlePrevious}
+            aria-label="Əvvəlki sual"
+            title="Əvvəlki sual"
+            className="w-12 shrink-0 py-3 bg-slate-700 hover:bg-slate-600 font-semibold rounded-xl transition cursor-pointer"
+          >
+            &larr;
+          </button>
+        )}
+
           <button
             onClick={handleNext}
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-xl transition cursor-pointer"
+            className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-xl transition cursor-pointer"
           >
             {currentIndex + 1 === questions.length ? "Nəticəni Gör" : "Növbəti Sual"}
           </button>
-        )}
+        </div>
       </div>
     </main>
   );
