@@ -69,7 +69,7 @@ export const quizData = {
   math: [
     {
       id: 1,
-      question: "Düzbucaqlı üçbucağın katetləri 3 sm və 4 sm olarsa, hipotonuz neçə sm olar?",
+      question: "Düzbucaqlı üçbucağın katetləri 3 sm və 4 sm olarsa, hipotenuz neçə sm olar?",
       options: ["5 sm", "7 sm", "25 sm", "6 sm"],
       correct: 0,
     },
