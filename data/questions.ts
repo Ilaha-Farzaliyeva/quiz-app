@@ -236,7 +236,7 @@ export const quizData = {
     {
       id: 8,
       question: "Əgər 5$3 = 28; 7$2 = 51; 6$4 = 40, onda 8$3 nədir?",
-      options: ["64", "65", "69", "24"],
+      options: ["64", "65", "67", "24"],
       correct: 2,
     },
     {
